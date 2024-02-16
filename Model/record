@@ -1,0 +1,19 @@
+package model
+
+type Record struct {
+	ID        string
+	CreatedAt string
+	Email     string
+	Risk      string
+	RiskLevel int64
+	Meta      Meta
+	Active    bool
+}
+
+type Meta struct {
+	Content     string
+	UserAgent   string
+	IPInternal  string
+	IPExternal  string
+	BrowserUUID int64
+}
