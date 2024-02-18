@@ -1,13 +1,17 @@
 package model
 
+type Records struct {
+	Records []Record
+}
+
 type Record struct {
 	ID        string
-	CreatedAt string
+	Created   string
 	Email     string
 	Risk      string
 	RiskLevel int64
-	Meta      Meta
-	Active    bool
+	Meta      string
+	Active    string
 }
 
 type Meta struct {
