@@ -7,21 +7,26 @@ import (
 )
 
 func main() {
-	records, err := extractor.ExtractJSON()
+	records, err := extractor.ExtractAuditJSON()
 	if err != nil {
 		fmt.Println("Invalid JSON")
 
 		return
 	}
-	riskiestUser, err := records.GetLargestRiskLevel()
+
+	riskiestUser, err := records.GetLargestRiskLevelAndFrequency()
 	if err != nil {
 		fmt.Println("Error finding risk level")
 
 		return
 	}
 
-	fmt.Println("Largest risk level", riskiestUser.RiskLevel)
-	fmt.Println("Largest risk level user", riskiestUser.Email)
+	activeUsers := records.GetActiveUsersInAuditRecords()
 
-	fmt.Println("Length of records:", len(records.Records))
+	fmt.Println("Largest risk level:", riskiestUser.RiskLevel)
+	fmt.Println("Largest risk level user:", riskiestUser.Email)
+	fmt.Println("Frequency of largest risk:", riskiestUser.Frequency)
+
+	fmt.Println("Active Users:", activeUsers)
+	fmt.Println("Length of records:", len(records.AuditRecords))
 }

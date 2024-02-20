@@ -4,11 +4,11 @@ import (
 	"strconv"
 )
 
-type Records struct {
-	Records []Record `json:"records"`
+type AuditRecords struct {
+	AuditRecords []AuditRecord `json:"records"`
 }
 
-type Record struct {
+type AuditRecord struct {
 	ID        string `json:"id"`
 	Created   string `json:"created"`
 	Email     string `json:"email"`
@@ -30,15 +30,14 @@ type Meta struct {
 type UserRisk struct {
 	Email     string
 	RiskLevel int
+	Frequency int
 }
 
-func (r *Records) GetLargestRiskLevel() (UserRisk, error) {
-	riskiest := UserRisk{
-		Email:     "",
-		RiskLevel: 0,
-	}
+// GetLargestRiskLevelAndFrequency finds the user with the largest risk level along with the frequency.
+func (r *AuditRecords) GetLargestRiskLevelAndFrequency() (UserRisk, error) {
+	riskiest := UserRisk{}
 
-	for _, record := range r.Records {
+	for _, record := range r.AuditRecords {
 		riskLevel, err := strconv.Atoi(record.RiskLevel)
 		if err != nil {
 			return UserRisk{}, err
@@ -47,8 +46,33 @@ func (r *Records) GetLargestRiskLevel() (UserRisk, error) {
 		if riskLevel > riskiest.RiskLevel {
 			riskiest.RiskLevel = riskLevel
 			riskiest.Email = record.Email
+			riskiest.Frequency = 0
+
+			continue
 		}
+
+		riskiest.Frequency++
 	}
 
 	return riskiest, nil
+}
+
+// GetActiveUsersInAuditRecords finds the active users among the audit records.
+func (r *AuditRecords) GetActiveUsersInAuditRecords() []string {
+	usersMap := map[string]bool{}
+	activeEmails := []string{}
+
+	for _, record := range r.AuditRecords {
+		if record.Active == "t" {
+			if _, ok := usersMap[record.Email]; !ok {
+				usersMap[record.Email] = true
+			}
+		}
+	}
+
+	for email := range usersMap {
+		activeEmails = append(activeEmails, email)
+	}
+
+	return activeEmails
 }
