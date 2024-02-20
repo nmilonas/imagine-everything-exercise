@@ -46,7 +46,7 @@ func (r *AuditRecords) GetLargestRiskLevelAndFrequency() (UserRisk, error) {
 		if riskLevel > riskiest.RiskLevel {
 			riskiest.RiskLevel = riskLevel
 			riskiest.Email = record.Email
-			riskiest.Frequency = 0
+			riskiest.Frequency = 1
 
 			continue
 		}
